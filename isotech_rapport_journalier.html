@@ -524,10 +524,18 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-top">
-    <div class="logo">ISO<span class="logo-tech">TECH</span></div>
-    <div class="date-badge" id="dateBadge"></div>
+    <div style="display:flex; align-items:flex-end; gap:10px;">
+      <div class="logo">ISO<span class="logo-tech">TECH</span></div>
+      <span style="font-family:'DM Sans', sans-serif; font-size:12px; font-weight:500; font-style:italic; color:rgba(255,255,255,0.95); letter-spacing:2px; text-transform:uppercase; padding-bottom:2px;">(Genève) SA</span>
+    </div>
   </div>
-  <div class="header-title">Rapport Journalier de Chantier</div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+    <div class="header-title">Rapport Journalier de Chantier</div>
+    <div style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:7px 12px; display:flex; flex-direction:column; align-items:center; gap:2px;">
+      <span id="jourSemaine" style="font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:2px; text-transform:uppercase;"></span>
+      <input type="date" id="dateRapport" style="background:transparent; border:none; font-family:monospace; font-size:13px; color:rgba(255,255,255,0.9); cursor:pointer; outline:none; padding:0; width:auto;" required>
+    </div>
+  </div>
 </div>
 
 <!-- PROGRESS -->
@@ -535,7 +543,7 @@
   <div class="progress-track">
     <div class="progress-fill" id="progressFill"></div>
   </div>
-  <div class="progress-label" id="progressLabel">0 / 5</div>
+  <div class="progress-label" id="progressLabel">0 / 4</div>
 </div>
 
 <form id="rapportForm">
@@ -572,6 +580,10 @@
       <div class="field">
         <label>Nom / Adresse du chantier <span class="required">*</span></label>
         <input type="text" id="chantier" placeholder="Ex: Route de Florissant 101, Genève" required>
+      </div>
+      <div class="field">
+        <label>N° de chantier <span style="color:var(--grey); font-weight:400; font-size:10px; letter-spacing:0;">(facultatif)</span></label>
+        <input type="text" id="numChantier" placeholder="Ex: GE2026-5770">
       </div>
 
     </div>
@@ -621,8 +633,8 @@
         </button>
       </div>
       <div class="field">
-        <label>Description des travaux <span class="required">*</span></label>
-        <textarea id="travaux" placeholder="Décrire les travaux effectués aujourd'hui..." required></textarea>
+        <label>Description des travaux</label>
+        <textarea id="travaux" placeholder="Décrire les travaux effectués aujourd'hui..."></textarea>
       </div>
     </div>
   </div>
@@ -717,11 +729,26 @@
 // DATE
 const now = new Date();
 const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-document.getElementById('dateBadge').innerHTML = now.toLocaleDateString('fr-CH', opts).replace(',', '<br>');
+
+
+// Set today's date as default in date picker
+const today = now.toISOString().split('T')[0];
+document.getElementById('dateRapport').value = today;
+
+function updateJour() {
+  const val = document.getElementById('dateRapport').value;
+  if (val) {
+    const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const d = new Date(val + 'T00:00:00');
+    document.getElementById('jourSemaine').textContent = jours[d.getDay()];
+  }
+}
+updateJour();
+document.getElementById('dateRapport').addEventListener('change', updateJour);
 
 // PROGRESS
 function updateProgress() {
-  const fields = ['ouvrier', 'chantier', 'heureDebut', 'travaux', 'heureFin'];
+  const fields = ['ouvrier', 'chantier', 'dateRapport', 'heureDebut'];
   const filled = fields.filter(id => document.getElementById(id)?.value?.trim()).length;
   const pct = (filled / fields.length) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
@@ -874,9 +901,10 @@ document.getElementById('rapportForm').addEventListener('submit', async function
   }).filter(Boolean).join(' | ');
 
   const data = {
-    date: new Date().toLocaleDateString('fr-CH'),
+    date: new Date(document.getElementById('dateRapport').value + 'T00:00:00').toLocaleDateString('fr-CH'),
     ouvrier: document.getElementById('ouvrier').value,
     chantier: document.getElementById('chantier').value,
+    numChantier: document.getElementById('numChantier').value,
     heureDebut: document.getElementById('heureDebut').value,
     heureFin: document.getElementById('heureFin').value,
     totalHeures: document.getElementById('totalHeures').value,
