@@ -2,20 +2,21 @@
   "name": "ISOTECH Rapports",
   "short_name": "ISOTECH",
   "description": "Rapport journalier de chantier ISOTECH (Genève) SA",
-  "start_url": "/isotech_rapport_journalier.html",
+  "start_url": "/isotech-rapports/isotech_rapport_journalier.html",
+  "scope": "/isotech-rapports/",
   "display": "standalone",
   "background_color": "#111111",
   "theme_color": "#111111",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "https://lucasportugal1011-glitch.github.io/isotech-rapports/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "https://lucasportugal1011-glitch.github.io/isotech-rapports/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
