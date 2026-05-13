@@ -924,20 +924,38 @@ photos: []
   };
 
   try {
+    // 1. Envoyer le rapport principal
     await fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
+
+    // 2. Envoyer les photos séparément
+    const photoFiles = Array.from(document.getElementById('photoInput').files).slice(0, 3);
+    for (const file of photoFiles) {
+      const reader = new FileReader();
+      const photoData = await new Promise(function(resolve) {
+        reader.onload = function(e) { resolve(e.target.result); };
+        reader.readAsDataURL(file);
+      });
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'photo',
+          date: data.date,
+          ouvrier: data.ouvrier,
+          chantier: data.chantier,
+          photoName: file.name,
+          photoData: photoData
+        })
+      });
+    }
+
     document.getElementById('successOverlay').classList.add('show');
-  } catch(err) {
-    alert('Erreur lors de l\'envoi. Vérifiez votre connexion et réessayez.');
-  } finally {
-    btn.textContent = 'Envoyer le rapport';
-    btn.disabled = false;
-  }
-});
 
 function newReport() {
   document.getElementById('successOverlay').classList.remove('show');
