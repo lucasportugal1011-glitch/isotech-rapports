@@ -920,7 +920,7 @@ document.getElementById('rapportForm').addEventListener('submit', async function
     travaux: document.getElementById('travaux').value,
     remarques: document.getElementById('remarques').value,
     signature: hasSig ? document.getElementById('sigCanvas').toDataURL('image/png') : '',
-photos: Array.from(document.getElementById('photoInput').files).slice(0, 3).map(function(f) { return f.name; })
+photos: []
   };
 
   try {
