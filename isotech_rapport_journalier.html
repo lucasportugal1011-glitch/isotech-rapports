@@ -828,9 +828,14 @@ function removeMateriau(btn) {
 // PHOTOS
 function handlePhotos(input) {
   const preview = document.getElementById('photoPreview');
-  Array.from(input.files).forEach(file => {
+  const files = Array.from(input.files).slice(0, 3);
+  if (input.files.length > 3) {
+    alert('Maximum 3 photos autorisées.');
+  }
+  preview.innerHTML = '';
+  files.forEach(function(file) {
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = function(e) {
       const img = document.createElement('img');
       img.src = e.target.result;
       img.className = 'photo-thumb';
