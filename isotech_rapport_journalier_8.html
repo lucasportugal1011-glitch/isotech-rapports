@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Rapport Journalier — ISOTECH</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --red: #cc1111;
+    --red-light: rgba(204,17,17,0.08);
+    --dark: #111111;
+    --grey: #666666;
+    --light: #f4f4f4;
+    --border: #e0e0e0;
+    --white: #ffffff;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f0f0;
+    color: var(--dark);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--dark);
+    padding: 20px 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .logo {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    font-style: italic;
+    color: white;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .logo-tech {
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo-tech::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: -16px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--red), transparent);
+  }
+
+  .date-badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    text-align: right;
+  }
+
+  .header-title {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    background: white;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--light);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--grey);
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* SECTIONS */
+  .section {
+    background: white;
+    margin: 16px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .section-header {
+    padding: 14px 18px;
+    background: var(--light);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--red);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dark);
+  }
+
+  .section-body { padding: 18px; }
+
+  /* FIELDS */
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--grey);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--dark);
+    background: white;
+    appearance: none;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px var(--red-light);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* HEURES ROW */
+  .hours-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hours-separator {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--grey);
+    text-align: center;
+  }
+
+  /* MATÉRIAUX */
+  .materiaux-list { margin-bottom: 12px; }
+
+  .materiau-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .materiau-item input { flex: 1; }
+
+  .materiau-item input:first-child { flex: 2; }
+
+  .btn-remove {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 8px;
+    font-size: 18px;
+    color: var(--grey);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .btn-remove:hover { background: #ffe0e0; color: var(--red); }
+
+  .btn-add {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px dashed var(--border);
+    background: white;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--grey);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-add:hover {
+    border-color: var(--red);
+    color: var(--red);
+    background: var(--red-light);
+  }
+
+  /* PHOTO UPLOAD */
+  .photo-upload {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-upload:hover {
+    border-color: var(--red);
+    background: var(--red-light);
+  }
+
+  .photo-upload input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .photo-upload-icon { font-size: 32px; margin-bottom: 8px; }
+
+  .photo-upload-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--grey);
+  }
+
+  .photo-upload-sub {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+  }
+
+  .photo-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .photo-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid var(--border);
+  }
+
+  /* SIGNATURE */
+  .signature-area {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .signature-canvas-wrap {
+    background: #fafafa;
+    position: relative;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 120px;
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  .signature-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 10px;
+    border-top: 1px solid var(--border);
+    background: white;
+  }
+
+  .btn-clear-sig {
+    font-size: 12px;
+    color: var(--grey);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .btn-clear-sig:hover { color: var(--red); background: var(--red-light); }
+
+  /* SUBMIT */
+  .submit-section { padding: 20px 16px; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 18px;
+    background: var(--dark);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+
+  .btn-submit:hover { background: var(--red); transform: translateY(-1px); }
+  .btn-submit:active { transform: translateY(0); }
+
+  .btn-submit::after {
+    content: '→';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+  }
+
+  /* SUCCESS */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .success-overlay.show { display: flex; }
+
+  .success-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    max-width: 320px;
+    width: 100%;
+  }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 16px;
+    color: white;
+  }
+
+  .success-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .success-text {
+    font-size: 14px;
+    color: var(--grey);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .btn-new {
+    width: 100%;
+    padding: 14px;
+    background: var(--dark);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* REQUIRED STAR */
+  .required { color: var(--red); margin-left: 2px; }
+
+  /* TRAVAUX TAGS */
+  .travaux-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .travaux-tag {
+    padding: 8px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--grey);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .travaux-tag.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+
+
+</style>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="ISOTECH Rapports">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div style="display:flex; align-items:flex-end; gap:10px;">
+      <div class="logo">ISO<span class="logo-tech">TECH</span></div>
+      <span style="font-family:'DM Sans', sans-serif; font-size:12px; font-weight:500; font-style:italic; color:rgba(255,255,255,0.95); letter-spacing:2px; text-transform:uppercase; padding-bottom:2px;">(Genève) SA</span>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+    <div class="header-title">Rapport Journalier de Chantier</div>
+    <div style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:7px 12px; display:flex; flex-direction:column; align-items:center; gap:2px;">
+      <span id="jourSemaine" style="font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:2px; text-transform:uppercase;"></span>
+      <input type="date" id="dateRapport" style="background:transparent; border:none; font-family:monospace; font-size:13px; color:rgba(255,255,255,0.9); cursor:pointer; outline:none; padding:0; width:auto;" required>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 4</div>
+</div>
+
+<form id="rapportForm">
+
+  <!-- 1. OUVRIER -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">👤</div>
+      <div class="section-title">Ouvrier</div>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Nom de l'ouvrier <span class="required">*</span></label>
+        <select id="ouvrier" required>
+          <option value="">— Sélectionner —</option>
+          <option>Carrico Paulo</option>
+          <option>De Sousa Paulo</option>
+          <option>Do Carmo Filipe</option>
+          <option>Duarte Ruben</option>
+          <option>Gomes Marcio</option>
+          <option>Pereira Hugo</option>
+          <option>Duarte Lucas</option>
+          <option>Leite Carlos</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CHANTIER -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🏗️</div>
+      <div class="section-title">Chantier</div>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Nom / Adresse du chantier <span class="required">*</span></label>
+        <input type="text" id="chantier" placeholder="Ex: Route de Florissant 101, Genève" required>
+      </div>
+      <div class="field">
+        <label>N° de chantier <span style="color:var(--grey); font-weight:400; font-size:10px; letter-spacing:0;">(facultatif)</span></label>
+        <input type="text" id="numChantier" placeholder="Ex: GE2026-5770">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. HEURES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">⏱️</div>
+      <div class="section-title">Heures travaillées</div>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Horaires <span class="required">*</span></label>
+        <div class="hours-row">
+          <input type="time" id="heureDebut" value="07:00" required>
+          <div class="hours-separator">→</div>
+          <input type="time" id="heureFin" value="17:00" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Total heures</label>
+        <input type="text" id="totalHeures" readonly placeholder="Calculé automatiquement" style="background:#f8f8f8; color: var(--grey);">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. TRAVAUX -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🔧</div>
+      <div class="section-title">Travaux effectués</div>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Métrés effectués</label>
+        <div class="materiaux-list" id="metresList">
+          <div class="materiau-item">
+            <input type="text" placeholder="Description (ex: Résine sol)" class="mat-name">
+            <input type="text" placeholder="Quantité (ex: 25 m²)" class="mat-qty" style="flex:1">
+            <button type="button" class="btn-remove" onclick="removeMetre(this)">×</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add" onclick="addMetre()">
+          + Ajouter un métré
+        </button>
+      </div>
+      <div class="field">
+        <label>Description des travaux</label>
+        <textarea id="travaux" placeholder="Décrire les travaux effectués aujourd'hui..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MATÉRIAUX -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">📦</div>
+      <div class="section-title">Matériaux utilisés</div>
+    </div>
+    <div class="section-body">
+      <div class="materiaux-list" id="materiauxList">
+        <div class="materiau-item">
+          <input type="text" placeholder="Matériau / Produit" class="mat-name">
+          <input type="text" placeholder="Qté + unité" class="mat-qty" style="flex:1">
+          <button type="button" class="btn-remove" onclick="removeMateriau(this)">×</button>
+        </div>
+      </div>
+      <button type="button" class="btn-add" onclick="addMateriau()">
+        + Ajouter un matériau
+      </button>
+    </div>
+  </div>
+
+  <!-- 6. PHOTOS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">📷</div>
+      <div class="section-title">Photos du chantier</div>
+    </div>
+    <div class="section-body">
+      <div class="photo-upload" id="photoUpload">
+        <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)">
+        <div class="photo-upload-icon">📸</div>
+        <div class="photo-upload-text">Appuyer pour prendre/ajouter des photos</div>
+        <div class="photo-upload-sub">JPG, PNG — plusieurs photos possibles</div>
+      </div>
+      <div class="photo-preview" id="photoPreview"></div>
+    </div>
+  </div>
+
+  <!-- 7. REMARQUES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">📝</div>
+      <div class="section-title">Remarques / Incidents</div>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <textarea id="remarques" placeholder="Problèmes rencontrés, remarques du client, incidents..." style="min-height:80px;"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. SIGNATURE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">✍️</div>
+      <div class="section-title">Signature</div>
+    </div>
+    <div class="section-body">
+      <p style="font-size:13px; color:var(--grey); margin-bottom:12px;">Signez dans l'espace ci-dessous pour valider le rapport.</p>
+      <div class="signature-area">
+        <div class="signature-canvas-wrap">
+          <canvas id="sigCanvas"></canvas>
+        </div>
+        <div class="signature-actions">
+          <button type="button" class="btn-clear-sig" onclick="clearSignature()">Effacer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-section">
+    <button type="submit" class="btn-submit">Envoyer le rapport</button>
+  </div>
+
+</form>
+
+<!-- SUCCESS -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Rapport envoyé !</div>
+    <div class="success-text">Le rapport journalier a été transmis à ISOTECH.<br>Un PDF vous sera envoyé par email.</div>
+    <button class="btn-new" onclick="newReport()">Nouveau rapport</button>
+  </div>
+</div>
+
+<script>
+// DATE
+const now = new Date();
+const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+
+
+// Set today's date as default in date picker
+const today = now.toISOString().split('T')[0];
+document.getElementById('dateRapport').value = today;
+
+function updateJour() {
+  const val = document.getElementById('dateRapport').value;
+  if (val) {
+    const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const d = new Date(val + 'T00:00:00');
+    document.getElementById('jourSemaine').textContent = jours[d.getDay()];
+  }
+}
+updateJour();
+document.getElementById('dateRapport').addEventListener('change', updateJour);
+
+// PROGRESS
+function updateProgress() {
+  const fields = ['ouvrier', 'chantier', 'dateRapport', 'heureDebut'];
+  const filled = fields.filter(id => document.getElementById(id)?.value?.trim()).length;
+  const pct = (filled / fields.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = filled + ' / ' + fields.length;
+}
+
+['ouvrier', 'chantier', 'heureDebut', 'heureFin', 'travaux'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', updateProgress);
+  document.getElementById(id)?.addEventListener('change', updateProgress);
+});
+
+// HEURES CALC
+function calcHeures() {
+  const debut = document.getElementById('heureDebut').value;
+  const fin = document.getElementById('heureFin').value;
+  const pause = 0;
+  if (debut && fin) {
+    const [dh, dm] = debut.split(':').map(Number);
+    const [fh, fm] = fin.split(':').map(Number);
+    let total = (fh * 60 + fm) - (dh * 60 + dm) - pause;
+    if (total > 0) {
+      const h = Math.floor(total / 60);
+      const m = total % 60;
+      document.getElementById('totalHeures').value = h + 'h' + (m ? m.toString().padStart(2,'0') : '00');
+    }
+  }
+}
+document.getElementById('heureDebut').addEventListener('change', calcHeures);
+document.getElementById('heureFin').addEventListener('change', calcHeures);
+
+calcHeures();
+
+// TAGS
+function toggleTag(el) {
+  el.classList.toggle('active');
+}
+
+
+
+// MATERIAUX
+function addMetre() {
+  const list = document.getElementById('metresList');
+  const item = document.createElement('div');
+  item.className = 'materiau-item';
+  item.innerHTML = `
+    <input type="text" placeholder="Description (ex: Résine sol)" class="mat-name">
+    <input type="text" placeholder="Quantité (ex: 25 m²)" class="mat-qty" style="flex:1">
+    <button type="button" class="btn-remove" onclick="removeMetre(this)">×</button>
+  `;
+  list.appendChild(item);
+}
+
+function removeMetre(btn) {
+  const items = document.querySelectorAll('#metresList .materiau-item');
+  if (items.length > 1) btn.closest('.materiau-item').remove();
+}
+
+function addMateriau() {
+  const list = document.getElementById('materiauxList');
+  const item = document.createElement('div');
+  item.className = 'materiau-item';
+  item.innerHTML = `
+    <input type="text" placeholder="Matériau / Produit" class="mat-name">
+    <input type="text" placeholder="Qté + unité" class="mat-qty" style="flex:1">
+    <button type="button" class="btn-remove" onclick="removeMateriau(this)">×</button>
+  `;
+  list.appendChild(item);
+}
+
+function removeMateriau(btn) {
+  const items = document.querySelectorAll('.materiau-item');
+  if (items.length > 1) btn.closest('.materiau-item').remove();
+}
+
+// PHOTOS
+function handlePhotos(input) {
+  const preview = document.getElementById('photoPreview');
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'photo-thumb';
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// SIGNATURE
+const canvas = document.getElementById('sigCanvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+let hasSig = false;
+
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.strokeStyle = '#111';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.touches ? e.touches[0] : e;
+  return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+}
+
+canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; });
+canvas.addEventListener('mouseup', () => drawing = false);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; });
+canvas.addEventListener('touchend', () => drawing = false);
+
+function clearSignature() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hasSig = false;
+}
+
+// GOOGLE SHEETS URL
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzI2gktWoFxL22fGJlA0m1XJKAnDIVeewKf8-wDey52xMShV8dbXpoZNlv5FefDNEb/exec';
+
+// SUBMIT
+document.getElementById('rapportForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const btn = document.querySelector('.btn-submit');
+  btn.textContent = 'Envoi en cours...';
+  btn.disabled = true;
+
+  // Collect métrés
+  const metres = Array.from(document.querySelectorAll('#metresList .materiau-item')).map(item => {
+    const name = item.querySelector('.mat-name')?.value || '';
+    const qty = item.querySelector('.mat-qty')?.value || '';
+    return name && qty ? name + ' : ' + qty : name || qty;
+  }).filter(Boolean).join(' | ');
+
+  // Collect matériaux
+  const materiaux = Array.from(document.querySelectorAll('#materiauxList .materiau-item')).map(item => {
+    const name = item.querySelector('.mat-name')?.value || '';
+    const qty = item.querySelector('.mat-qty')?.value || '';
+    return name && qty ? name + ' : ' + qty : name || qty;
+  }).filter(Boolean).join(' | ');
+
+  const data = {
+    date: new Date(document.getElementById('dateRapport').value + 'T00:00:00').toLocaleDateString('fr-CH'),
+    ouvrier: document.getElementById('ouvrier').value,
+    chantier: document.getElementById('chantier').value,
+    numChantier: document.getElementById('numChantier').value,
+    heureDebut: document.getElementById('heureDebut').value,
+    heureFin: document.getElementById('heureFin').value,
+    totalHeures: document.getElementById('totalHeures').value,
+    metres: metres,
+    materiaux: materiaux,
+    travaux: document.getElementById('travaux').value,
+    remarques: document.getElementById('remarques').value,
+    signature: hasSig
+  };
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    document.getElementById('successOverlay').classList.add('show');
+  } catch(err) {
+    alert('Erreur lors de l\'envoi. Vérifiez votre connexion et réessayez.');
+  } finally {
+    btn.textContent = 'Envoyer le rapport';
+    btn.disabled = false;
+  }
+});
+
+function newReport() {
+  document.getElementById('successOverlay').classList.remove('show');
+  document.getElementById('rapportForm').reset();
+  clearSignature();
+  document.getElementById('photoPreview').innerHTML = '';
+  
+  updateProgress();
+  calcHeures();
+  window.scrollTo(0, 0);
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
